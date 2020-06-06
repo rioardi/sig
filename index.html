@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tsunami selat sunda</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+		<link rel="stylesheet" href="css/MarkerCluster.css" />
+		<link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+		<link rel="stylesheet" type="text/css" href="css/own_style.css">
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+		<script src="js/leaflet-hash.js"></script>
+		<script src="js/Autolinker.min.js"></script>
+		<script src="js/leaflet.markercluster.js"></script>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	</head>
+	<body>
+		<div id="map"></div>
+		<script src="data/exp_titikCrisisCenter.js"></script>
+		<script src="data/exp_terdampakparah.js"></script>
+		<script src="data/exp_terdampakringan.js"></script>
+		<script src="data/exp_INFOPERKECAMATAN.js"></script>
+		<script src="data/exp_INFOPERKABUPATEN.js"></script>
+		<script>
+		var map = L.map('map', {
+			zoomControl:true, maxZoom:19
+		}).fitBounds([[-6.09974556874,105.070429201],[-5.41518591946,106.287947088]]);
+		var hash = new L.Hash(map);
+		var additional_attrib = 'created w. <a href="https://github.com/geolicious/qgis2leaf" target ="_blank">qgis2leaf</a> by <a href="http://www.geolicious.de" target ="_blank">Geolicious</a> & contributors<br>';
+		var feature_group = new L.featureGroup([]);
+		var raster_group = new L.LayerGroup([]);
+		var basemap_0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+			attribution: additional_attrib + '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+		});	
+		basemap_0.addTo(map);
+		var basemap_1 = L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', { 
+			attribution: additional_attrib + '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+		});	
+		var layerOrder=new Array();
+		var img_OpenStreetMap= 'data/exp_OpenStreetMap.png';
+		var img_bounds_OpenStreetMap = [[-85.0511287776,-179.999999975],[85.0511287776,179.999999975]];
+		var overlay_OpenStreetMap = new L.imageOverlay(img_OpenStreetMap, img_bounds_OpenStreetMap).addTo(map);
+		raster_group.addLayer(overlay_OpenStreetMap);
+		function pop_INFOPERKABUPATEN(feature, layer) {					
+			var popupContent = '<table><tr><th scope="row">Kab</th><td>' + Autolinker.link(String(feature.properties['Kab'])) + '</td></tr><tr><th scope="row">Korban</th><td>' + Autolinker.link(String(feature.properties['Korban'])) + '</td></tr><tr><th scope="row">Meninggal</th><td>' + Autolinker.link(String(feature.properties['Meninggal'])) + '</td></tr><tr><th scope="row">Luka</th><td>' + Autolinker.link(String(feature.properties['Luka'])) + '</td></tr><tr><th scope="row">Hilang</th><td>' + Autolinker.link(String(feature.properties['Hilang'])) + '</td></tr><tr><th scope="row">Kerusakan</th><td>' + Autolinker.link(String(feature.properties['Kerusakan'])) + '</td></tr></table>';
+			layer.bindPopup(popupContent);
+		}
+
+		function doStyleINFOPERKABUPATEN(feature) {
+				return {
+					color: '#000000',
+					fillColor: '#627b9a',
+					weight: 1.3,
+					dashArray: '',
+					opacity: 1.0,
+					fillOpacity: 1.0
+				};
+
+		}
+		var exp_INFOPERKABUPATENJSON = new L.geoJson(exp_INFOPERKABUPATEN,{
+			onEachFeature: pop_INFOPERKABUPATEN,
+			style: doStyleINFOPERKABUPATEN
+		});
+		layerOrder[layerOrder.length] = exp_INFOPERKABUPATENJSON;
+		for (index = 0; index < layerOrder.length; index++) {
+			feature_group.removeLayer(layerOrder[index]);feature_group.addLayer(layerOrder[index]);
+		}
+		//add comment sign to hide this layer on the map in the initial view.
+		feature_group.addLayer(exp_INFOPERKABUPATENJSON);
+		function pop_INFOPERKECAMATAN(feature, layer) {					
+			var popupContent = '<table><tr><th scope="row">Kecamatan</th><td>' + Autolinker.link(String(feature.properties['Kecamatan'])) + '</td></tr><tr><th scope="row">Kategori</th><td>' + Autolinker.link(String(feature.properties['Kategori'])) + '</td></tr><tr><th scope="row">Korban</th><td>' + Autolinker.link(String(feature.properties['Korban'])) + '</td></tr><tr><th scope="row">Meninggal</th><td>' + Autolinker.link(String(feature.properties['Meninggal'])) + '</td></tr><tr><th scope="row">Luka</th><td>' + Autolinker.link(String(feature.properties['Luka'])) + '</td></tr><tr><th scope="row">Hilang</th><td>' + Autolinker.link(String(feature.properties['Hilang'])) + '</td></tr></table>';
+			layer.bindPopup(popupContent);
+		}
+
+		function doStyleINFOPERKECAMATAN(feature) {
+				return {
+					color: '#000000',
+					fillColor: '#89ac79',
+					weight: 1.3,
+					dashArray: '',
+					opacity: 1.0,
+					fillOpacity: 1.0
+				};
+
+		}
+		var exp_INFOPERKECAMATANJSON = new L.geoJson(exp_INFOPERKECAMATAN,{
+			onEachFeature: pop_INFOPERKECAMATAN,
+			style: doStyleINFOPERKECAMATAN
+		});
+		layerOrder[layerOrder.length] = exp_INFOPERKECAMATANJSON;
+		for (index = 0; index < layerOrder.length; index++) {
+			feature_group.removeLayer(layerOrder[index]);feature_group.addLayer(layerOrder[index]);
+		}
+		//add comment sign to hide this layer on the map in the initial view.
+		feature_group.addLayer(exp_INFOPERKECAMATANJSON);
+		function pop_terdampakringan(feature, layer) {					
+			var popupContent = '<table><tr><th scope="row">ogc_fid</th><td>' + Autolinker.link(String(feature.properties['ogc_fid'])) + '</td></tr><tr><th scope="row">desa</th><td>' + Autolinker.link(String(feature.properties['desa'])) + '</td></tr><tr><th scope="row">keterangan</th><td>' + Autolinker.link(String(feature.properties['keterangan'])) + '</td></tr><tr><th scope="row">korban</th><td>' + Autolinker.link(String(feature.properties['korban'])) + '</td></tr><tr><th scope="row">meninggal</th><td>' + Autolinker.link(String(feature.properties['meninggal'])) + '</td></tr><tr><th scope="row">luka</th><td>' + Autolinker.link(String(feature.properties['luka'])) + '</td></tr><tr><th scope="row">hilang</th><td>' + Autolinker.link(String(feature.properties['hilang'])) + '</td></tr><tr><th scope="row">foto</th><td>' + Autolinker.link(String(feature.properties['foto'])) + '</td></tr></table>';
+			layer.bindPopup(popupContent);
+		}
+
+		var exp_terdampakringanJSON = new L.geoJson(exp_terdampakringan,{
+			onEachFeature: pop_terdampakringan,
+			pointToLayer: function (feature, latlng) {  
+				return L.circleMarker(latlng, {
+					radius: 10.0,
+					fillColor: '#fbd202',
+					color: '#000000',
+					weight: 1,
+					opacity: 1.0,
+					fillOpacity: 1.0
+				})
+			}
+		});
+		var cluster_groupterdampakringanJSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
+		cluster_groupterdampakringanJSON.addLayer(exp_terdampakringanJSON);
+		//add comment sign to hide this layer on the map in the initial view.
+		cluster_groupterdampakringanJSON.addTo(map);
+		function pop_terdampakparah(feature, layer) {					
+			var popupContent = '<table><tr><th scope="row">ogc_fid</th><td>' + Autolinker.link(String(feature.properties['ogc_fid'])) + '</td></tr><tr><th scope="row">nama</th><td>' + Autolinker.link(String(feature.properties['nama'])) + '</td></tr><tr><th scope="row">keterangan</th><td>' + Autolinker.link(String(feature.properties['keterangan'])) + '</td></tr><tr><th scope="row">korban</th><td>' + Autolinker.link(String(feature.properties['korban'])) + '</td></tr><tr><th scope="row">meninggal</th><td>' + Autolinker.link(String(feature.properties['meninggal'])) + '</td></tr><tr><th scope="row">luka</th><td>' + Autolinker.link(String(feature.properties['luka'])) + '</td></tr><tr><th scope="row">hilang</th><td>' + Autolinker.link(String(feature.properties['hilang'])) + '</td></tr><tr><th scope="row">foto</th><td>' + Autolinker.link(String(feature.properties['foto'])) + '</td></tr></table>';
+			layer.bindPopup(popupContent);
+		}
+
+		var exp_terdampakparahJSON = new L.geoJson(exp_terdampakparah,{
+			onEachFeature: pop_terdampakparah,
+			pointToLayer: function (feature, latlng) {  
+				return L.circleMarker(latlng, {
+					radius: 10.0,
+					fillColor: '#ff2301',
+					color: '#000000',
+					weight: 1,
+					opacity: 1.0,
+					fillOpacity: 1.0
+				})
+			}
+		});
+		var cluster_groupterdampakparahJSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
+		cluster_groupterdampakparahJSON.addLayer(exp_terdampakparahJSON);
+		//add comment sign to hide this layer on the map in the initial view.
+		cluster_groupterdampakparahJSON.addTo(map);
+		function pop_titikCrisisCenter(feature, layer) {					
+			var popupContent = '<table><tr><th scope="row">ogc_fid</th><td>' + Autolinker.link(String(feature.properties['ogc_fid'])) + '</td></tr><tr><th scope="row">nama</th><td>' + Autolinker.link(String(feature.properties['nama'])) + '</td></tr><tr><th scope="row">keterangan</th><td>' + Autolinker.link(String(feature.properties['keterangan'])) + '</td></tr><tr><th scope="row">foto</th><td>' + Autolinker.link(String(feature.properties['foto'])) + '</td></tr></table>';
+			layer.bindPopup(popupContent);
+		}
+
+		var exp_titikCrisisCenterJSON = new L.geoJson(exp_titikCrisisCenter,{
+			onEachFeature: pop_titikCrisisCenter,
+			pointToLayer: function (feature, latlng) {  
+				return L.circleMarker(latlng, {
+					radius: 10.0,
+					fillColor: '#78b87e',
+					color: '#000000',
+					weight: 1,
+					opacity: 1.0,
+					fillOpacity: 1.0
+				})
+			}
+		});
+		var cluster_grouptitikCrisisCenterJSON= new L.MarkerClusterGroup({showCoverageOnHover: false});
+		cluster_grouptitikCrisisCenterJSON.addLayer(exp_titikCrisisCenterJSON);
+		//add comment sign to hide this layer on the map in the initial view.
+		cluster_grouptitikCrisisCenterJSON.addTo(map);
+
+		feature_group.addTo(map);
+		var title = new L.Control();
+		title.onAdd = function (map) {
+			this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+			this.update();
+			return this._div;
+		};
+		title.update = function () {
+			this._div.innerHTML = '<h2>Peta sebaran Tsunami selat sunda</h2>Peta sebaran Tsunami selat sunda tahun 2018'
+		};
+		title.addTo(map);
+	var baseMaps = {
+		'OSM Standard': basemap_0,
+		'OSM Black & White': basemap_1};
+		L.control.layers(baseMaps,{"titikCrisisCenter": cluster_grouptitikCrisisCenterJSON,"terdampakparah": cluster_groupterdampakparahJSON,"terdampakringan": cluster_groupterdampakringanJSON,"INFOPERKECAMATAN": exp_INFOPERKECAMATANJSON,"INFOPERKABUPATEN": exp_INFOPERKABUPATENJSON,"OpenStreetMap": overlay_OpenStreetMap},{collapsed:false}).addTo(map);
+		L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);
+	</script>
+</body>
+</html>
